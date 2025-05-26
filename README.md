@@ -114,16 +114,35 @@ stopCounting(id)
 
 ### [6	Managing Async Operations: An Overview](https://launchschool.com/lessons/1a2b6504/assignments/91d3619f)
 
-- How to manage tasks that take time:
+- How to manage tasks that take time wihtout blocking Javascript's single-thread( ie not sitting in front of the laundry machine):
   - like fetching data from the server ("fetchez la vache")
 - three main tools:
   - Callbacks
   - Promises
   - Async/Await
 
-### 7	Callbacks
-### 8	Practice Problems: Callbacks
-### 9	Error Handling with Callbacks
+### [7	Callbacks](https://launchschool.com/lessons/1a2b6504/assignments/efeae132)
+
+###### A simple example
+
+- hmmmmm I know what callbacks are. why am i reading this?
+
+#### What setTimeout Represents
+
+### [8	Practice Problems: Callbacks](https://launchschool.com/lessons/1a2b6504/assignments/69007cc1)
+
+1.
+2.
+3.
+4.
+5.
+
+### [9	Error Handling with Callbacks](https://launchschool.com/lessons/1a2b6504/assignments/7c17530f)
+
+- error-first callbacks
+
+#### A complete example
+
 ### 10	Practice Problems: Error Handling with Callbacks
 ### 11	The Limitations of Callbacks
 ### 12	Summary
