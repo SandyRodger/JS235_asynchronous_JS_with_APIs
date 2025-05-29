@@ -237,13 +237,207 @@ startCounter((count) => {
 
 #### Using then()
 
+```javascript
+let myPromise = new Promise((resolve) => {
+  setTimeout(() => {
+    resolve("hello");
+  }, 1000)
+});
+
+myPromise.then((result) => {
+  console.log(`Got a result: ${result}`);
+});
+
+console.log('Finished setting up!');
+```
+
 #### Managing Asynchronous Operations with Promises
 
+```javascript
+const users = {
+  1234: { name: 'Aisha Patel', age: 29 },
+  5678: { name: 'John Smith', age: 35 },
+  9101: { name: 'Susan Green', age: 42 },
+};
 
+const passwords = {                             // WARNING: THIS IS NOT HOW
+  Aisha: { password: 'password123', id: 1234 }, // PASSWORDS ARE STORED
+  John: { password: 'secret', id: 5678 },
+  Susan: { password: 'Green83', id: 9101 },
+};
+
+function authenticate(username, password, callback) {
+  setTimeout(() => {
+    // 10% chance of an unknown server error
+    if (Math.random() < 0.1) {
+      return callback('Something went wrong. Please try again later.', null);
+    }
+
+    if (passwords[username] && passwords[username].password === password) {
+      callback(null, passwords[username].id);
+    } else {
+      callback('Invalid username or password', null);
+    }
+  }, 1000);
+}
+
+function fetchUserProfile(id, callback) {
+  setTimeout(() => {
+    // 10% chance of an unknown server error
+    if (Math.random() < 0.1) {
+      return callback('Something went wrong. Please try again later.', null);
+    }
+
+    // Normal behavior: check if user exists
+    let userData = users[id];
+    if (userData) {
+      callback(null, userData);
+    } else {
+      callback('User not found', null);
+    }
+  }, 2000);
+}
+
+function retryNTimes(fn, n, callback, ...args) {
+  let attempts = 0;
+
+  function attempt() {
+    console.log(`Attempt number: ${attempts + 1}`);
+    fn(...args, (error, data) => {
+      if (!error || attempts >= n) {
+        callback(error, data);
+      } else {
+        attempts++;
+        attempt();
+      }
+    });
+  }
+
+  attempt();
+}
+```
+
+```javascript
+washLaundry().then(() => {
+  console.log("Folding Laundry.");
+  console.log("Putting away Laundry.");
+})
+```
 
 ### [3	Practice Problems: Promise Basics](https://launchschool.com/lessons/701aaae0/assignments/d1860c94)
-### 4	Chaining Promises	
-### 5	Error Handling with Promises	
+
+1.
+```javascript
+function bakeCookies() {
+  console.log("Mixing ingredients.");
+  console.log("Scooping cookie dough.");
+  console.log("Putting cookies in oven.");
+  
+  console.log("Baking...");
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("Beep!");
+      resolve();
+    }, 3000)
+  });
+}
+
+let bakingPromise = bakeCookies();
+
+bakingPromise.then(() => {
+  console.log('Take out cookies');
+  console.log('Leave cookies to cool');
+});
+```
+
+2.  Ok I didn't quite get this one. In my defence, the instructions are unclear. But also I haven't really internalised this.
+
+3. The return value of the function (as LS write it) is `Promise <pending>` and I'm not sure waht to do with that. Especially as "Download complete!" is not printed.
+
+```javascript
+function downloadFilePromise() {
+  return new Promise((resolve) => {
+    console.log("Downloading file...");
+    setTimeout(() => {
+      resolve("Download complete!");
+    }, 1500);
+  });
+}
+
+downloadFilePromise(); // Promise { <pending> }
+```
+4. I got the exact right answer, but don't know what it means or how it works. Not very Launch-school
+
+```javascript
+function processDataPromise(numbers, callback) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const processed = numbers.map(callback);
+      resolve(processed);
+    }, 1000);
+  });
+}
+```
+
+### [4	Chaining Promises](https://launchschool.com/lessons/701aaae0/assignments/cbc0f690)
+
+- So far it's been promise resolved by `then` once the promise resolves. Now we're going to make these an asynchronous sequence.
+
+```javascriipt
+let myPromise = new Promise((resolve) => {
+  setTimeout(() => {
+    resolve("Hello");
+  }, 1000)
+});
+
+let thenReturnValue = myPromise.then((result) => {
+  return `The result is: ${result}`;
+});
+
+console.log(thenReturnValue);
+```
+
+#### a promise chain
+
+```javascript
+new Promise(function(resolve) {
+  setTimeout(() => resolve(1), 2000);
+})
+  .then(function (result) {
+    console.log(result);
+    return result * 2;
+  })
+  .then(function(result) {
+    console.log(result);
+    return result * 2;
+  })
+  .then(function(result) {
+    console.log(result);
+    return result * 2;
+  });
+```
+
+```javascript
+let email = 'example@email.com';
+
+checkfEmailExists(email)
+  .then(storeUserDetails)
+  .then(sendVerificationEmail)
+  .then(() => {
+    console.log("user signup process completed!");
+  })
+```
+
+#### A common gotcha
+
+- be careful with what exactly your promise is returning
+
+### [5	Error Handling with Promises](https://launchschool.com/lessons/701aaae0/assignments/e79150ab)
+
+#### reject and .catch()
+
+
+
 ### 6	Practice Problems: Error Handling with Promises	
 ### 7	Assignment: Updating User Information App with Promises	
 ### 8	Promise API	
