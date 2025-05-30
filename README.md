@@ -436,20 +436,413 @@ checkfEmailExists(email)
 
 #### reject and .catch()
 
+```javascript
+let myPromise = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject(new Error("Something went wrong."));
+  }, 1000)
+});
+
+myPromise.catch((errorMessage) => {
+  console.log(`Error message: ${errorMessage}`);
+})
+```
+
+- we can pass any value to `reject` but it's only supposed to take errors.
+
+```javascript
+function getStatus() {
+  const rand = Math.random();
+
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (rand > 0.4) {
+        resolve(200);
+      } else if (rand > 0.2) {
+        reject(404);
+      } else {
+        reject(500);
+      }
+    }, 2000)
+  })
+}
+
+const statusPromise = getStatus();
+
+statusPromise
+  .then(successCode => {
+    console.log(`Success! Status code: ${successCode}`);
+  })
+  .catch(failureCode => {
+    console.log(`Failed. Status code: ${failureCode}`);
+  })
+```
+
+#### Error propagation in Promises
+
+- `catch` should always be included because it catches everything, errors and rejects.
+
+#### Recovering from Errors
+
+- `.catch()` can, as well as loggin errors, be used to recover from errrors by returning a new value/promise. FOr example:
+
+```javascript
+doSomethingAsync()
+  .then((result) => doSomethingElseAsync(result))
+  .catch((error) => {
+    console.error("An error occured in the first two steps:", error);
+    return fallbackValue;
+  })
+  .then((newResult) => doThirdThingAsync(newResult));
+```
+
+- Just like with `then` any return value from `catch` will be wrapped in a promise.
+
+#### `.finally()`
+
+- this method is always called regardless of whether the primise was fulfilled or not.
+
+```javascript
+statusPromise
+  .then(successCode => {
+  console.log(`Success! Status code: ${successCode}`);
+  })
+  .catch(failureCode => {
+    console.log(`Failed. Status code: ${failureCode}`);
+  })
+  .finally(() => {
+    console.log(`All settled!`);
+  })
+```
+#### A different way to use `then`
+
+```javascript
+const statusPromise = getStatus();
+
+statusPromise
+  .then(
+    (successCode) => console.log(`Success! Status code: ${successCode}`),
+    (failureCode) => console.log(`Failed. Status code: ${failureCode}`)
+  )
+```
+
+- don't use this way. (why am I learning it? -> because you may see it written this way by others).
+
+#### `Promise.resolve` and `Promise.reject` Static Methods
+
+```javascript
+let promiseA = Promise.resolve(42);
+
+let promiseB = new Promise((resolve, reject) => {
+  resolve(42);
+})
+
+console.log(promiseA); // Promise {<fulfilled>: 42}
+console.log(promiseB); // Promise {<fulfilled>: 42}
+```
+
+```javascript
+let promiseA = Promise.reject('Oh no!');
+
+let promiseB = new Promise((resolve, reject) => {
+  reject('Oh no!');
+})
+
+console.log(promiseA); // Promise {<rejected>: 'Oh no!'}
+console.log(promiseB); // Promise {<rejected>: 'Oh no!'}
+```
+### [6	Practice Problems: Error Handling with Promises	](https://launchschool.com/lessons/701aaae0/assignments/05f3855c)
+
+1. OK, my beef here is that the question stipulates: "Create a promise called flakyService that simulates a service that sometimes fails.", but the answer is a **function** called 'flakyService' which returns a promise. Not the same thing.
+
+```javascript
+function flakyService() {
+  return new Promise((resolve, reject) => {
+    if (Math.random() > 0.5) {
+      resolve("Operation successful");
+    } else {
+      reject("Operation failed");
+    }
+  });
+}
+
+flakyService().then(console.log).catch(console.error);
+```
+
+2.
+
+```javascript
+function operation() {
+  return new Promise((resolve) => {
+    console.log("Operation started");
+    setTimeout(() => {
+      resolve("Operation complete");
+    }, 1000);
+  });
+}
+
+operation()
+  .then(console.log)
+  .finally(() => {
+    console.log("Cleaning up resources...");
+  });
+```
+
+3. weird
+```javascript
+Promise.resolve(7)
+  .then((number) => number * 2)
+  .then((number) => number + 5)
+  .then((result) => console.log(result));
+```
+
+4. 
+```javacsript
+function fetchUserData() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => 
+      reject({error:"User not found" }
+    ), 500);
+  });
+}
+
+fetchUserData()
+  .catch((error) => console.error(error.error))
+  .finally(() => console.log("Fetching complete"))
+```
+
+5. 
+```javascript
+function retryOperation(operationFunc) {
+  let attempts = 0;
+  function attempt() {
+    return operationFunc().catch((err) => {
+      if (attempts < 2) {
+        attempts++;
+        console.log(`Retry attempt #${attempts}`);
+        return attempt();
+      } else {
+        throw err;
+      }
+    });
+  }
+
+  return attempt().catch(() => console.error("Operation failed"));
+}
 
 
-### 6	Practice Problems: Error Handling with Promises	
-### 7	Assignment: Updating User Information App with Promises	
-### 8	Promise API	
-### 9	Practice Problems: Promise API	
-### 10	Async / Await	
-### 11	Practice Problems: Async / Await	
-### 12	Error Handling with Async / Await	
-### 13	Practice Problems: Error Handling with Async / Await	
-### 14	Assignment: Updating User Information App with `async` / `await`	
-### 15	Combining Async / Await with Promise Methods	
-### 16	Summary	
+retryOperation(
+  () =>
+    new Promise((resolve, reject) =>
+      Math.random() > 0.33
+        ? resolve("Success!")
+        : reject(new Error("Fail!"))
+    )
+);
+```
+
+7. 
+```javascript
+function loadData() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (Math.random() > 0.5) {
+        resolve("Data loaded");
+      } else {
+        reject("Network error");
+      }
+    }, 1000);
+  }).catch(() => {
+    console.error("An error occurred. Attempting to recover...");
+    return Promise.resolve("Using cached data");
+  });
+}
+
+loadData().then(console.log);
+```
+
+
+### [7	Assignment: Updating User Information App with Promises	](https://launchschool.com/lessons/701aaae0/assignments/934f5046)
+
+- skip for now
+
+### [8	Promise API	](https://launchschool.com/lessons/701aaae0/assignments/db7a742f)
+
+#### `promise.all()`
+#### `promise.race()`
+#### `promise.allSettled()`
+#### `promise.any()`
+
+### [9	Practice Problems: Promise API](https://launchschool.com/lessons/701aaae0/assignments/91f24c6e)
+
+- skip for now
+
+### [10	Async / Await](https://launchschool.com/lessons/701aaae0/assignments/3ce8eb42)
+
+#### async Functions
+#### await Keyword
+#### Using await Without a Promise
+#### Handling Multiple Asynchronous Tasks
+### [11	Practice Problems: Async / Await](https://launchschool.com/lessons/701aaae0/assignments/aa5dfac0)
+
+### [12	Error Handling with Async / Await](https://launchschool.com/lessons/701aaae0/assignments/49ba5b39)
+
+#### Error Propagation
+#### Catching Errors from Multiple Operations
+#### Catching Specific Errors
+#### Clean up using finally
+### [13	Practice Problems: Error Handling with Async / Await](https://launchschool.com/lessons/701aaae0/assignments/f4edd69b)
+
+### [14	Assignment: Updating User Information App with `async` / `await`](https://launchschool.com/lessons/701aaae0/assignments/d0fc9896)
+
+### [15	Combining Async / Await with Promise Methods](https://launchschool.com/lessons/701aaae0/assignments/e02110a7)
+
+### [16	Summary](https://launchschool.com/lessons/701aaae0/assignments/b8645009)
+#### Conclusion
 ### 17	Quiz
 
-## 3	Making HTTP Requests from JavaScript
-## 4	Putting it All Together
+## [3	Making HTTP Requests from JavaScript](https://launchschool.com/lessons/1b723bd0/assignments)
+
+
+### [1	Introduction](https://launchschool.com/lessons/1b723bd0/assignments/ff3903a8)
+
+- `fetch` browser APIfor making netweord requests
+
+### [2	What to Focus On](https://launchschool.com/lessons/1b723bd0/assignments/d9f41631)	
+
+- Think HTTP
+- Be Familiar with Fetch
+- Understand How To Serialize Data
+- Decompose Functionality into API Requests
+- Read API Documentation
+
+### [3	HTTP Review](https://launchschool.com/lessons/1b723bd0/assignments/ad1bafe7)	
+### [4	Book: Working with Web APIs](https://github.com/SandyRodger/launch_school_books/edit/main/working_with_web_APIs.md)
+### Working with APIs book
+### [5	Network Programming in JavaScript](https://launchschool.com/lessons/1b723bd0/assignments/9d538701)
+#### Single Page Applications
+### [6	Making a Request with Fetch	](https://launchschool.com/lessons/1b723bd0/assignments/9beef168)
+#### Making a Simple Request
+#### Fetch's Response Object
+#### Reading Response Data
+#### Configuring Fetch Requests
+### [7	Data Serialization](https://launchschool.com/lessons/1b723bd0/assignments/8da76880)
+#### Request Serialization Formats
+##### Query String / URL Encoding
+#### Multipart Forms
+#### JSON Serialization
+### [8	Example: Loading HTML via Fetch](https://launchschool.com/lessons/1b723bd0/assignments/b781aaa3)
+#### Summary
+#### Problems
+### [9	Example: Submitting a Form via Fetch](https://launchschool.com/lessons/1b723bd0/assignments/85a3754f)	
+#### URL-encoding POST Parameters
+#### Submitting a Form
+#### Submitting a Form with FormData
+#### Problems
+### [10	Example: Loading JSON via Fetch](https://launchschool.com/lessons/1b723bd0/assignments/cf01ccbf)
+#### Problems
+### [11	Example: Sending JSON via Fetch](https://launchschool.com/lessons/1b723bd0/assignments/ae60c1cd)
+#### Setting the Content-Type Header
+#### Handling the Response
+#### Problems
+### [12	Cross-Domain Requests with Fetch and CORS](https://launchschool.com/lessons/1b723bd0/assignments/25da79fd)
+#### Cross-Origin Requests
+#### Cross-Origin requests with Fetch
+#### CORS
+#### CORS in action
+#### Conclusion
+### [13	Legacy JavaScript - jQuery and XMLHttpRequest](https://launchschool.com/lessons/1b723bd0/assignments/84d25145)
+#### jQuery
+#### XMLHttpRequest (XHR)
+##### A Basic GET Request
+### [14	Project: Search Autocomplete, Part 1 - Introduction and Setup	](https://launchschool.com/lessons/1b723bd0/assignments/b9691285)
+#### Introduction
+#### Server Setup
+### [15	Project: Search Autocomplete, Part 2 - Setting up the UI](https://launchschool.com/lessons/1b723bd0/assignments/e784e7dd)
+#### Setting up the UI 
+### [16	Project: Search Autocomplete, Part 3 - Talking to the server](https://launchschool.com/lessons/1b723bd0/assignments/0be1e6a9)
+#### Binding Events
+#### Communicating With the Server
+#### Rendering List of Countries
+#### Resetting the UI
+#### Rendering Overlay Content
+#### Improving the Overlay Content
+### [17	Project: Search Autocomplete, Part 4 - Improving user experience](https://launchschool.com/lessons/1b723bd0/assignments/d9af6b23)
+#### Going Up and Down the List
+#### Tab Completion
+#### Hide the List and Revert to User Input
+#### Selecting a Country by Clicking
+### [18	Project: Search Autocomplete, Part 5 - Throttling Fetch requests](https://launchschool.com/lessons/1b723bd0/assignments/72dd3b59)
+#### The Problem
+#### The Solution
+###### Throttling
+#### Implementing debounce
+##### Making the Code Reusable
+### [19	Summary](https://launchschool.com/lessons/1b723bd0/assignments/7729a45a)	
+### 20	Quiz	
+
+## [4	Putting it All Together](https://launchschool.com/lessons/32b572ea/assignments)
+### [1	Introduction](https://launchschool.com/lessons/32b572ea/assignments/bcd772c9)	
+### [2	Project: Photo Gallery, Part 1 - Introduction and Server Setup](https://launchschool.com/lessons/32b572ea/assignments/96518ba5)
+#### Server Set up
+#### HTML & CSS
+### [3	Project: Photo Gallery, Part 2 - Fetch Data and Render on Page Load	](https://launchschool.com/lessons/32b572ea/assignments/584a0789)
+##### Templates
+#### Step 1: Fetch Photos Data and Render Photos on Page Load
+#### Step 2: Render Comments for the First Photo
+### [4	Project: Photo Gallery, Part 3 - Slide Show](https://launchschool.com/lessons/32b572ea/assignments/67707770)
+##### Step 3: Create the Slide Show Functionality
+### [5	 Project: Photo Gallery, Part 4 - Like, Favorite, and Comment](https://launchschool.com/lessons/32b572ea/assignments/3c346f4c)
+#### Step 4: Like and Favorite a Photo
+#### Step 5: Add a New Comment for a Photo
+### [6	Project: Booking App, Part 1 - Introduction and Server Setup](https://launchschool.com/lessons/32b572ea/assignments/40b0794b)
+##### App Description
+##### App Specifications
+##### Getting to Know the Booking App
+### [7	Project: Booking App, Part 2 - Getting Schedules	](https://launchschool.com/lessons/32b572ea/assignments/de4a7522)
+
+### [8	Project: Booking App, Part 3 - Adding Staff](https://launchschool.com/lessons/32b572ea/assignments/94801ccf)	
+### [9	Project: Booking App, Part 4 - Adding Schedules](https://launchschool.com/lessons/32b572ea/assignments/2518c13d)
+### [10	Project: Booking App, Part 5 - Booking Time Slots](https://launchschool.com/lessons/32b572ea/assignments/c5488715)	
+### [11	Project: Booking App, Part 6 - Viewing Bookings](https://launchschool.com/lessons/32b572ea/assignments/f31a1f08)	
+### [12	 Project: Booking App, Part 7 - Cancellations](https://launchschool.com/lessons/32b572ea/assignments/d5166c30)	
+### 13	JS235 Course Feedback
+
+## Assessment
+### [1	Assessment Format](https://launchschool.com/lessons/ee8a7b70/assignments/7eedfff9)
+#### Part 1 - The Written Quiz
+#### Part 2 - The Interview
+#### Part 3 - The Take Home Project
+  - 3 days to complete.
+### [2	Study Guide](https://launchschool.com/lessons/ee8a7b70/assignments/ebb356f3)
+#### Study Topics
+- DOM Traversal and Manipulation
+- Events and Event Handling
+- Asynchronous JavaScript
+  - Callback-based Asynchronous JavaScript
+  - The Promise API
+  - async/await
+  - setTimeout, setInterval
+  - The fetch API
+  - Error Handing with Asynchronous Code
+- Communicating with the server through fetch and rendering the response to the page
+### [3	Part 1: Tips for the JS239 Quiz](https://launchschool.com/lessons/ee8a7b70/assignments/2182dc64)
+  - A mixture of theory and practical questions.
+#### Online resources
+#### Additional tips
+
+### [4	Part 1: Start the JS239 Quiz](https://launchschool.com/lessons/ee8a7b70/assignments/9e8f3b11)
+  - revise:
+    -  teh DOM
+    -  the Event Model
+    -  Asynchronous code
+    -  AJAX with `fetch`
+  -  3 and a half hours to complete
+-  YOU CAN SKIP THIS
+### 5	Part 2: Tips for the JS239 Interview
+### 6	Part 2: Schedule a JS239 Interview
+### 7	JS239 Interview Feedback
+### 8	Part 3: Tips for the Take Home Project
+### 9	 Part 3: Practice Project
+### 10	Part 3: The Take Home Project
+### 11	Project Feedback
