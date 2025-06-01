@@ -718,7 +718,110 @@ loadData().then(console.log);
 
 ### [3	HTTP Review](https://launchschool.com/lessons/1b723bd0/assignments/ad1bafe7)	
 ### [4	Book: Working with Web APIs](https://github.com/SandyRodger/launch_school_books/edit/main/working_with_web_APIs.md)
+
 ### Working with APIs book
+## [Working with Web APIs](https://launchschool.com/books/working_with_apis)
+### Introduction
+#### What this Book Covers
+### [Preparations](https://launchschool.com/books/working_with_apis/read/preparations)
+##### HTTPie Option Reference
+### [Using Postman](https://launchschool.com/books/working_with_apis/read/using_postman#makingarequest)
+#### Checking the Weather
+#### Summary
+### Defining API
+#### [What is an API?](https://launchschool.com/books/working_with_apis/read/defining_api#whatisanapi)
+#### [Web APIs](https://launchschool.com/books/working_with_apis/read/defining_api#webapis)
+#### [Provider and Consumer](https://launchschool.com/books/working_with_apis/read/defining_api#provider_and_consumer)
+#### [What about Clients and Servers?](https://launchschool.com/books/working_with_apis/read/defining_api#clientsandservers)
+#### [Summary](https://launchschool.com/books/working_with_apis/read/defining_api#summary)
+### [What APIs Can Do](https://launchschool.com/books/working_with_apis/read/what_apis_can_do)
+#### [Sharing Data](https://launchschool.com/books/working_with_apis/read/what_apis_can_do#sharingdate)
+#### [Enabling Automation](https://launchschool.com/books/working_with_apis/read/what_apis_can_do#enablingautomation)
+#### [Leverage Existing Services](https://launchschool.com/books/working_with_apis/read/what_apis_can_do#leverageexistingservices)
+#### [Summary](https://launchschool.com/books/working_with_apis/read/what_apis_can_do#summary)
+### [Accessibility](https://launchschool.com/books/working_with_apis/read/accessibility)
+#### [Public and Private](https://launchschool.com/books/working_with_apis/read/accessibility#publicandprivate)
+###### Public APIs
+###### Private APIs
+#### [Terms and conditions](https://launchschool.com/books/working_with_apis/read/accessibility#termsandconditions)
+#### [Summary](https://launchschool.com/books/working_with_apis/read/accessibility#summary)
+### [A Review of HTTP](https://launchschool.com/books/working_with_apis/read/a_review_of_http)
+#### [Request and Response](https://launchschool.com/books/working_with_apis/read/a_review_of_http#requestandresponse)
+#### [Headers](https://launchschool.com/books/working_with_apis/read/a_review_of_http#headers)
+#### [Body](https://launchschool.com/books/working_with_apis/read/a_review_of_http#body)
+#### [Summary](https://launchschool.com/books/working_with_apis/read/a_review_of_http#summary)
+### [A Review of URLs](https://launchschool.com/books/working_with_apis/read/a_review_of_urls)
+#### [URL or URI](https://launchschool.com/books/working_with_apis/read/a_review_of_urls#url_or_uri)
+#### The parts of a URL
+#### [Identifiers in Paths](https://launchschool.com/books/working_with_apis/read/a_review_of_urls#identifiers_in_paths)
+#### [Summary](https://launchschool.com/books/working_with_apis/read/a_review_of_urls#summary)
+### [Media Types](https://launchschool.com/books/working_with_apis/read/media_types)
+#### Data-serialization
+#### XML
+#### [JSON](https://launchschool.com/books/working_with_apis/read/media_types#json)
+#### [Summary](https://launchschool.com/books/working_with_apis/read/media_types#summary)
+### [REST and CRUD](https://launchschool.com/books/working_with_apis/read/rest_and_crud)
+#### [What is REST?](https://launchschool.com/books/working_with_apis/read/rest_and_crud#rest)
+#### [CRUD](https://launchschool.com/books/working_with_apis/read/rest_and_crud#crud)
+#### [A RESTful API Template](https://launchschool.com/books/working_with_apis/read/rest_and_crud#restfulapitemplate)
+#### [Resource-Oriented Thinking](https://launchschool.com/books/working_with_apis/read/rest_and_crud#resourceorientedthinking)
+#### Conventions, not Rules
+#### Summary
+## WORKING WITH AN API
+### [Fetching Resources](https://launchschool.com/books/working_with_apis/read/fetching_resources#serversetup)
+#### [Server setup](https://launchschool.com/books/working_with_apis/read/fetching_resources#serversetup)
+#### [Fetching a Resource](https://launchschool.com/books/working_with_apis/read/fetching_resources#fetchingaresource)
+#### [What is a Resource?](https://launchschool.com/books/working_with_apis/read/fetching_resources#what_is_a_resource)
+#### [Fetching a collection](https://launchschool.com/books/working_with_apis/read/fetching_resources#fetching_a_collection)
+#### [Elements and Collections](https://launchschool.com/books/working_with_apis/read/fetching_resources#elements_and_collection)
+##### How to know if a URL is for a collection or an element?
+#### [Summary](https://launchschool.com/books/working_with_apis/read/fetching_resources#summary)
+### [Requests in Depth](https://launchschool.com/books/working_with_apis/read/requests_in_depth)
+#### [GET and POST](https://launchschool.com/books/working_with_apis/read/requests_in_depth#get_and_post)
+#### [Parts of a Request](https://launchschool.com/books/working_with_apis/read/requests_in_depth#parts_of_a_request)
+#### [Summary](https://launchschool.com/books/working_with_apis/read/requests_in_depth#summary)
+### [Creating Resources](https://launchschool.com/books/working_with_apis/read/creating_resources)
+#### [HTTP Request Side Effects](https://launchschool.com/books/working_with_apis/read/creating_resources#http_request_side_effects)
+#### [Creating a resource](https://launchschool.com/books/working_with_apis/read/creating_resources#creating_a_resource)
+#### [Handling Errors](https://launchschool.com/books/working_with_apis/read/creating_resources#handling_errors)
+###### Missing or Invalid Parameters
+###### Missing resources
+###### Authentication
+###### Incorrect Media Type
+###### Rate limiting
+###### Server Errors
+#### [Summary](https://launchschool.com/books/working_with_apis/read/creating_resources#summary)
+### [More HTTP Methods](https://launchschool.com/books/working_with_apis/read/more_http_methods)
+#### [Updating a resource](https://launchschool.com/books/working_with_apis/read/more_http_methods#updating_a_resource)
+#### [Deleting a Resource](https://launchschool.com/books/working_with_apis/read/more_http_methods#deleting_a_resource)
+#### [Summary](https://launchschool.com/books/working_with_apis/read/more_http_methods#summary)
+## REAL WORLD APIS
+### [TMDB API](https://launchschool.com/books/working_with_apis/read/tmdb_api)
+#### Our Goal
+#### [Reading Documentation](https://launchschool.com/books/working_with_apis/read/tmdb_api#readingdocumentation)
+#### [First API Request](https://launchschool.com/books/working_with_apis/read/tmdb_api#firstrequest)
+#### [Gaining Access](https://launchschool.com/books/working_with_apis/read/tmdb_api#gainingaccess)
+#### [Fetching movie information](https://launchschool.com/books/working_with_apis/read/tmdb_api#fetchingmovieinfo)
+#### [Rating A Movie](https://launchschool.com/books/working_with_apis/read/tmdb_api#ratingmovies)
+#### [Deleting A Rating](https://launchschool.com/books/working_with_apis/read/tmdb_api#deletingrating)
+#### [TMDB API and REST Principles Analysis](https://launchschool.com/books/working_with_apis/read/tmdb_api#apirestanalysis)
+###### Resource Design
+###### HTTP Methods
+###### Error handling approach
+###### Real-World Impact
+###### What we can learn
+#### Exercises:
+### REFERENCE
+### [HTTP Response Headers](https://launchschool.com/books/working_with_apis/read/http_response_headers)
+#### [Access-Control-Allow-Origin](https://launchschool.com/books/working_with_apis/read/http_response_headers#accesscontrolalloworigin)
+#### [Allow](https://launchschool.com/books/working_with_apis/read/http_response_headers#allow)
+#### [Content-Length](https://launchschool.com/books/working_with_apis/read/http_response_headers#contentlength)
+#### [Content-type](https://launchschool.com/books/working_with_apis/read/http_response_headers#contenttype)
+#### [ETag](https://launchschool.com/books/working_with_apis/read/http_response_headers#etag)
+#### [Last-Modified](https://launchschool.com/books/working_with_apis/read/http_response_headers#lastmodified)
+#### [WWW-Authenticate](https://launchschool.com/books/working_with_apis/read/http_response_headers#wwwauthenticate)
+#### [X-* Headers](https://launchschool.com/books/working_with_apis/read/http_response_headers#xheader)
+
 ### [5	Network Programming in JavaScript](https://launchschool.com/lessons/1b723bd0/assignments/9d538701)
 #### Single Page Applications
 ### [6	Making a Request with Fetch	](https://launchschool.com/lessons/1b723bd0/assignments/9beef168)
