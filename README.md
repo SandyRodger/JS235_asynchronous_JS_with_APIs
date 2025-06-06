@@ -2,6 +2,11 @@
 
 ## [1	Asynchronous Programming with Callbacks](https://launchschool.com/lessons/1a2b6504)
 
+- laundry analogy. Wash up whle the clothes wash. yup
+
+#### Why Do We Need Asynchronous Code?
+
+- (5.6.25) I've read this page twice, there's nothing I need to remember on it.
 
 ### [1	Introduction](https://launchschool.com/lessons/1a2b6504/assignments/5844b58f)
 ### [2	What is Asynchronous Programming?](https://launchschool.com/lessons/1a2b6504/assignments/8946cd6c)
@@ -63,6 +68,33 @@ function c() {
 afterNSeconds(c, 10);
 ```
 
+- 2nd pass (5.6.25)
+  1.
+```javascript
+function delayLog(n) {
+  console.log(n);
+  setTimeout(() => {
+    if (n < 10) {
+      delayLog(n+1)
+    }
+  }, 1000)
+}
+
+delayLog(1);
+```
+
+2. 1, 5, 9, 13, 2, 10, 6, 14 - correct
+3. 
+4. 
+```javascript
+function afterNseconds(callback, timeDuration) {
+  setTimeout(()=> {
+    callback()
+  }, timeDuration)
+}
+
+afterNseconds(() => console.log('yes'), 3000)
+```
 
 ### [4	Repeating Execution with setInterval](https://launchschool.com/lessons/1a2b6504/assignments/d93e4c24)
 
@@ -95,10 +127,82 @@ function stopCounting(token) {
 
 stopCounting(id)
 ```
-  
+
+  - 2nd pass (5.6.25):
+
+1. yup
+```javascript
+function startCounting() {
+  let n = 0;
+  setInterval(() => {
+    n += 1
+    console.log(n)
+  }, 1000)
+}
+
+startCounting();
+```
+
+2.
+```javascript
+function startCounting(n=0) {
+let intId = setInterval(() => {
+    n < 10 ? console.log(n+=1) : clearInterval(intId);
+  }, 1000)
+}
+
+startCounting();
+```
+3.
+```javascript
+function weirdLog(counter = 0) {
+  console.log('Starting...');
+  let stop = setInterval(() => {
+    if (counter < 6) {
+      console.log("Hello!");
+    } else {
+      console.log("Goodbye!")
+      clearInterval(stop);
+    }
+    counter += 1;
+  }, 2000)
+}
+
+weirdLog();
+```
+
+I like LS solution:
+
+
+console.log("Starting...");
+
+const intervalId = setInterval(() => {
+  console.log("Hello!");
+}, 2000);
+
+setTimeout(() => {
+  clearInterval(intervalId);
+  console.log("Goodbye!");
+}, 10000);
+
 ### [5	What is the Event Loop?](https://launchschool.com/lessons/1a2b6504/assignments/2da1ba17)
 
-- YT video I need to unblock
+- YT video:
+  - what are you Javascript?
+  - v8?
+  - callstack and heap?
+  - why callbacks? Why so different to other languages? How does this run-time work?
+  heap: where memory allocation happen
+  call-stack: where the stack frames are
+  - grep - should I be better at grep?
+  - single thread: it can do one thing at a time.
+  - callstack keeps track of where we are.
+  - main function is the file itself
+  blocking = things that take a long time and block the stack.
+  concurrency and the event loop (yes JS can only do one thing at a time, but… the browser is not the javascript runtime.)
+  to shim? "I haven't shimmed XHR yet" he says.
+  render,,,?
+  scroll handlers… every 16 ms...
 - [article](https://blog.bitsrc.io/understanding-asynchronous-javascript-the-event-loop-74cd408419ff)
   -  Javascript is a single-threaded programming language
     -  you needn't worry about concurrency issues
