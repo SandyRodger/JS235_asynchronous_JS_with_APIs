@@ -218,7 +218,7 @@ setTimeout(() => {
 
 ### [6	Managing Async Operations: An Overview](https://launchschool.com/lessons/1a2b6504/assignments/91d3619f)
 
-- How to manage tasks that take time wihtout blocking Javascript's single-thread( ie not sitting in front of the laundry machine):
+- How to manage tasks that take time without blocking Javascript's single-thread( ie not sitting in front of the laundry machine):
   - like fetching data from the server ("fetchez la vache")
 - three main tools:
   - Callbacks
@@ -289,14 +289,55 @@ startCounter((count) => {
 
 ### [9	Error Handling with Callbacks](https://launchschool.com/lessons/1a2b6504/assignments/7c17530f)
 
-- "established patterns like error-first callbacks" whatever that means
-- but also "You don't need to master error handling with callbacks"
+- "established patterns like error-first callbacks" whatever that means.
+- but also "You don't need to master error handling with callbacks".
 
 #### A complete example
 
 ### 10	Practice Problems: Error Handling with Callbacks
 
-- urgh, this was a blow to my confidence.
+(2nd try 9.6.25)
+1. OK, i did this successfully
+2. 
+
+```javascript
+document.getElementById('userForm').addEventListener('submit', function (event) {
+  event.preventDefault();
+
+  const userInfoDiv = document.getElementById('userInfo');
+  const errorMessageDiv = document.getElementById('errorMessage');
+
+  userInfoDiv.textContent = '';
+  errorMessageDiv.textContent = '';
+
+  const username = document.getElementById('usernameInput').value.trim();
+  const password = document.getElementById('passwordInput').value.trim();
+
+  authenticate(username, password, (errorMessage, userId) => {
+    if (userId) {
+      userInfoDiv.textContent = 'Login Successful! Fetching your data...';
+
+      fetchUserProfile(userId, (errorMessage, userData) => {
+        if (errorMessage) {
+          errorMessageDiv.textContent = `Error: ${errorMessage}`;
+          errorMessageDiv.style.display = 'block';
+        } else {
+          userInfoDiv.textContent = `Hello, ${userData.name}!\nYou are ${userData.age} years old!`;
+        }
+      })
+
+    } else {
+      errorMessageDiv.textContent = errorMessage;
+      errorMessageDiv.style.display = 'block';
+    }
+  });
+});
+```
+
+key take-aways:
+  - in the following line we can access what the user just typed in, even though we're not accessing the `event` or `currentTarget` or `target`. This is because the `value` property of an input field is updated in real time as the user types, not just when the form is submitted.
+    - `const password = document.getElementById('passwordInput').value.trim();`
+  - I found this code difficult to follow and write because it's hard to keep track of the callbacks and their return values. all in all it made me want to shoot myself in the eye. let's move on.
 
 ### [11	The Limitations of Callbacks](https://launchschool.com/lessons/1a2b6504/assignments/1ce548f8)
 
@@ -326,7 +367,22 @@ startCounter((count) => {
 
 ### 13	Quiz
 
-- 1st go (28.5.25) 4/6
+- 1st go (28.5.25) 4/6 (1, 2, 3, 4)
+  - 5 & 6 wrong
+- 2nd go (9.6.25) 4/6 (1, 2, 4, 6)
+  - 3 & 5 wrong
+1. B tick
+2. C tick
+3. A I will say yes because even though we have not completed the `washLaundry` function when we begin the `bakeCookies` function, we have completed the two console.logs that comprise the `washLaundry` activity.
+B
+Not C because we do not invoke the `afterCookies()` function.
+Not D because I don't know what the `washLaundry` function does.
+  - correct except for this. D does fulfill the conditions of the question because it is identical to A, except that we're using named functions. The mistake I made was not reading the question closely enough. The question states that the excerpts are updating the code above, so we do indeed know what the `bakecookies   and `washLaundry` functions do.
+4. B - tick
+5. A 
+  - and B: I know this. This was a careless oversight.
+6. D - tick
+
 
 ### [2	Promises and Async / Await](https://launchschool.com/lessons/701aaae0/assignments)
 
@@ -482,6 +538,7 @@ function processDataPromise(numbers, callback) {
   });
 }
 ```
+4. 2nd pass - got the right answer and I know why it works now.
 
 ### [4	Chaining Promises](https://launchschool.com/lessons/701aaae0/assignments/cbc0f690)
 
@@ -604,7 +661,7 @@ doSomethingAsync()
 
 #### `.finally()`
 
-- this method is always called regardless of whether the primise was fulfilled or not.
+- this method is always called regardless of whether the promise was fulfilled or not.
 
 ```javascript
 statusPromise
@@ -764,28 +821,150 @@ function loadData() {
 
 loadData().then(console.log);
 ```
-
+  SECOND PASS: I could still solve hardly any of this. (10.6.25)
 
 ### [7	Assignment: Updating User Information App with Promises	](https://launchschool.com/lessons/701aaae0/assignments/934f5046)
 
-- skip for now
+1.
+```javascript
+function authenticate(username, password) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (Math.random() < 0.1) {
+        reject('Something went wrong. Please try again later.');
+      }
+  
+      if (passwords[username] && passwords[username].password === password) {
+        resolve(passwords[username].id);
+      } else {
+        reject('Invalid username or password');
+      }
+    }, 1000);
+  })
+}
 
+const users = {
+  1234: { name: 'Aisha Patel', age: 29 },
+  5678: { name: 'John Smith', age: 35 },
+  9101: { name: 'Susan Green', age: 42 },
+};
+
+const passwords = {                             // WARNING: THIS IS NOT HOW
+  Aisha: { password: 'password123', id: 1234 }, // PASSWORDS ARE STORED
+  John: { password: 'secret', id: 5678 },
+  Susan: { password: 'Green83', id: 9101 },
+};
+
+authenticate('Susan', 'Green83')
+  .then(console.log)
+  .catch(console.error)
+  .finally('and some cows');
+```
+- errors:
+  - the argument to `reject` should be a `new Error()`
+  - even though we are returning the main `Promise` of the function, we call return with the `reject` statement in order to escape the funtion early.
+- Other than that I was pretty close!
+
+2. Boy, I hope we don't have to write documentation in the assessment.
+3. I can't find the `userId` I'm peekin' (also I wasn't sure how to disentangle `retryNTimes` from the code
+    - aha - userId is the return value of a successsful `authenticate` call.
+    - It was simpler than I was building it up to be. I just had to replace the `retryNTimes` with `authenticate`.
+4. OK I peeked here as well. Key points:
+     - the `retryNTimes` function is not only for `authenticate`, so it takes a `fn` argument and a `...args` argument.
+5. Almost! I just missed that we are not only retrying `authenticate`, but also `fetschUserProfile`
 ### [8	Promise API	](https://launchschool.com/lessons/701aaae0/assignments/db7a742f)
 
+- provides methods to use with promises.
+
 #### `promise.all()`
+
+- takes an iterable collection of promises and returns a single promise.
+- fulfills if they all fulfill, rejects if even one rejects.
+- returns an array of the resolve values in order.
+
 #### `promise.race()`
+
+- Takes an iterable of promises.
+- takes the first promise to complete and dumps the rest. If this first promise resolves -> it resolves, if it rejects, it rejects.
+
+- concise setTimeout: `setTimeout(resolve, 100, "two");` where the third argument is the arg passed to `resolve`
+
 #### `promise.allSettled()`
+
+- returns a promise that resolves when all inpout promises are fullfilled/rejected
+- returns an array of objects descriing the outcomes.
+- So it's like Promise.all, but witth a complete picture regardless of rejects.
+
+```javascript
+let p1 = Promise.resolve(3);
+let p2 = new Promise((resolve, reject) => setTimeout(reject, 1000, "foo"));
+let ps = [p1, p2];
+
+Promise.allSettled(ps).then((result) => {
+  result.forEach((r) => console.log(r));
+});
+```
+
 #### `promise.any()`
+
+- takes an iterable of promises and returns a single promise as soon as one of those promises is fulfilled
+- If they all fail it returns an `aggregateError`, a kind of error that groups together individual errors.
 
 ### [9	Practice Problems: Promise API](https://launchschool.com/lessons/701aaae0/assignments/91f24c6e)
 
-- skip for now
+2. nailed it
+```javascript
+const firstResource = new Promise((resolve) =>
+  setTimeout(() => resolve("First resource loaded"), 500)
+);
+const secondResource = new Promise((resolve) =>
+  setTimeout(() => resolve("Second resource loaded"), 400)
+);
+
+Promise.race([firstResource, secondResource]).then((result) => {
+  console.log(result);
+})
+```
+
+3. nailed it
+
+```javascript
+const services = [flakyService(), flakyService(), flakyService()];
+Promise.allSettled(services).then((result) => {
+  result.forEach((r) => console.log(r));
+})
+```
+
+4. nailed it.
+```javascript
+const services = [flakyService(), flakyService(), flakyService()];
+Promise.any(services)
+  .then((v) => console.log(v))
+  .catch((v) => console.error(v));
+```
+
+5. kinda -> i guessed the race bit, but got muddled up with syntax.
+```javascript
+
+```
 
 ### [10	Async / Await](https://launchschool.com/lessons/701aaae0/assignments/3ce8eb42)
 
+- this is mere syntactical sugar for promises.
+  
 #### async Functions
+
+- yup
+
 #### await Keyword
+
+- omg
+- ok (slightly rushed)
+
 #### Using await Without a Promise
+
+- JS will just wrap the value in a fulfilled promise.
+
 #### Handling Multiple Asynchronous Tasks
 ### [11	Practice Problems: Async / Await](https://launchschool.com/lessons/701aaae0/assignments/aa5dfac0)
 
