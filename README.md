@@ -1281,6 +1281,7 @@ async function fetchAll() {
 
 ### [1	Introduction](https://launchschool.com/lessons/1b723bd0/assignments/ff3903a8)
 
+- 2nd pass (12.6.25)
 - `fetch` browser API for making network requests
 
 ### [2	What to Focus On](https://launchschool.com/lessons/1b723bd0/assignments/d9f41631)	
@@ -1292,6 +1293,31 @@ async function fetchAll() {
 - Read API Documentation
 
 ### [3	HTTP Review](https://launchschool.com/lessons/1b723bd0/assignments/ad1bafe7)	
+
+- video: client/server request response cycle.
+  -first step: create a request (usually prompted by user event)
+  - user types in URL, this creates a request. Request:
+    - domain name is not used in the request
+    - request type = GET
+    - path: `/tasks`
+    - paramenters: `?due=today`
+  - When the server receives the request it begins working with the data:
+  - Then sends a response:
+    - Status: 200 OK
+    - Headers: content-type: text/html
+    - Body: <html><body>...
+
+- practice problems:
+  - 1. What are the required components of an HTTP request? What are the additional optional components?
+       - HTTP method
+       - path
+       - also HTTP version
+       - the rest is optional (paramenters, headers, message body)
+- 2. What are the required components of an HTTP response? What are the additional optional components?
+     - Status line with status code
+     - headers & body are optional
+- 3. What determines whether a request should use GET or POST as its HTTP method?
+     - Get for retrieving data, POST for sending data
 ### [4	Book: Working with Web APIs](https://github.com/SandyRodger/launch_school_books/edit/main/working_with_web_APIs.md)
 
 # [Working with Web APIs](https://launchschool.com/books/working_with_apis)
@@ -2501,52 +2527,581 @@ The last time the request was modified.
 -lists headers beginning with x. If they begin with x it means they're not standardized headers, often API specific.
 
 ### [5	Network Programming in JavaScript](https://launchschool.com/lessons/1b723bd0/assignments/9d538701)
+
+- ok
+- AJAX is good for hovering over a word and a popup telling us about that word
+- Or for when a loarge page has a form. If yiou submit it with an error, you won't want to reload the whole page
+
 #### Single Page Applications
+
+- These days making extra HTML requests outside the main HTML page load is super common, and indeed some modern apps fetch data in a serialized format stitching the DOM together just from those. These are "Single-page applications" because they often run entirely within one HTML page. So this model does each interaction by passing data to and from the server, usually encoded as JSON
+
 ### [6	Making a Request with Fetch	](https://launchschool.com/lessons/1b723bd0/assignments/9beef168)
+
+- used to do this with `XMLHttpRequest` object. That used callbacks, but this is...
+- promise-based.
+
 #### Making a Simple Request
+
+- the browser provides a `fetch` method (on `Window`)
+- It takes a resource as an argument
+- it initiates a GET request adn retuns a promise that is fulfilled once the response is available.
+
 #### Fetch's Response Object
+
+- table of response properties:
+  - .body
+  - .bodyUsed
+  - .headers
+  - .ok
+  - .redirected
+  - .status
+  - .statusText
+  - .type
+  - .url
+
 #### Reading Response Data
+
+- all these useful methods ARE ASYNCHRONOUS!
+- the response body is in plain text. Use `response.text()`.
+- Also:
+  - `.text()`
+  - `.json()`
+  - `.blob()`
+- You can only consume the body of a response once. Hence teh `bodyUsed` property. If you need to use it more than once, use `response.clone()`
+
 #### Configuring Fetch Requests
+
+- fetch can take a 2nd parameter: `options`
+- `options` is an object.
+- The most common kv pairs in `options` are:
+  - `method` => a string of the HTTP method, defaults to GET
+  - `body` -> the request body, data-type is flexible, could be a string or other data types
+  - `headers` -> an obejct literal, keys are headers, values are header values
+
+```javascript
+fetch('https://my_blog.com/api/entries', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ date: '2025-04-25', entry: 'Perfect day! Not too hot, not too cold'})
+})
+```
+
 ### [7	Data Serialization](https://launchschool.com/lessons/1b723bd0/assignments/8da76880)
+
+- review data-serialization in API book. tick
+
 #### Request Serialization Formats
+
+yup
+
 ##### Query String / URL Encoding
+
+```
+GET /path?title=Do%20Androids%20Dream%20of%20Electric%20Sheep%3F&year=1968 HTTP/1.1
+Host: example.test
+Accept: */*
+```
+
 #### Multipart Forms
+
+- a boundry delimiter seperates the parts of the request:
+- `Content-Type: multipart/form-data; boundary=----WebKitFormBoundarywDbHM6i57QWyAWro`
+- looks like this:
+```javascript
+POST /path HTTP/1.1
+Host: example.test
+Content-Length: 267
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundarywDbHM6i57QWyAWro
+Accept: */*
+
+------WebKitFormBoundarywDbHM6i57QWyAWro
+Content-Disposition: form-data; name="title"
+
+Do Androids Dream of Electric Sheep?
+------WebKitFormBoundarywDbHM6i57QWyAWro
+Content-Disposition: form-data; name="year"
+
+1968
+------WebKitFormBoundarywDbHM6i57QWyAWro--
+```
+
 #### JSON Serialization
+
+```
+POST /path HTTP/1.1
+Host: example.test
+Content-Length: 62
+Content-Type: application/json; charset=utf-8
+Accept: */*
+
+{"title":"Do Androids Dream of Electric Sheep?","year":"1968"}
+```
+
+###### content-type and charset
+
+- charset is optional, but best-practice
+
 ### [8	Example: Loading HTML via Fetch](https://launchschool.com/lessons/1b723bd0/assignments/b781aaa3)
+
+```javascipt
+document.addEventListener('DOMContentLoaded', async () => {
+  let store = document.getElementById('store');
+  const BASE_URL = 'https://ls-230-web-store-demo.herokuapp.com';
+  
+  async function loadContent(url) {
+    let response = await fetch(url);
+    store.innerHTML = await response.text();
+  }
+
+  await loadContent(`${BASE_URL}/products`);
+
+  store.addEventListener('click', async event => {
+    let target = event.target;
+    if (target.tagName !== "A") {
+      return;
+    }
+
+    event.preventDefault();
+    let url = BASE_URL + target.getAttribute('href');
+    await loadContent(url)
+  })
+});
+```
+
 #### Summary
-#### Problems
+
+- we can use the `fetch` API to fetch content and insert it into an existing web-page without a full page reload
+- We can attach event listeners to dynamically loaded content and use `fetch` to handle navigation and interactions without reloading the entire page.
+
+#### Problem
+
+1. LS answer: "The form submits a POST request to http://s.codepen.io/products/<product id> and receives a 404 response"
+
 ### [9	Example: Submitting a Form via Fetch](https://launchschool.com/lessons/1b723bd0/assignments/85a3754f)	
+
+3 steps:
+1. serialize the data
+2. send the request with `fetch`
+3. handle the response
+
+- `Accept` defaults to `*/*`
+
 #### URL-encoding POST Parameters
+
+```javascipr
+async function postData() {
+  let data = 'title=Effective%20JavaScript&author=David%20Herman';
+
+  let response = await fetch('https://lsjs230-book-catalog.herokuapp.com/books', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: data,
+  });
+
+  if (response.status === 201) {
+    console.log(`This book was added to the catalog: ${await response.text()}`);
+  }
+}
+
+postData();
+```
+
 #### Submitting a Form
+
+- `HTMLFormElement.elements`
+- what the fuck is `encodeURIComponent(element.name)` ?
+
+```javascript
+let form = document.getElementById('form');
+let messageDiv = document.getElementById('message');
+
+form.addEventListener('submit', event => {
+
+  event.preventDefault();
+  messageDiv.style.display = 'none';
+
+  let keysAndValues = [];
+
+  for (let index = 0; index < form.nextElementSibling.clientHeight; index += 1) {
+    let element = form.elements[index];
+    let key;
+    let value;
+
+    if (element.type !== 'submit') {
+      key = encodeURIComponent(element.name);
+      value = encodeURIComponenet(element.value);
+      keysAndValues.push(`${key}=${value}`);
+    }
+  }
+
+  let data = keysAndValues.join('&');
+
+  async function submitFormData(form, data) {
+    let response = await fetch(`https://lsjs230-book-catalog.herokuapp.com/${form.getAttribute('action')}`, {
+      method: form.method,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: data,
+    });
+
+    if (response.status === 201) {
+      messageDiv.textContent = `This book was added to the catalog: ${await response.text()}`;
+      messageDiv.style.display = 'block';
+    }
+  }
+  submitFormData(form, data);
+});
+```
+
 #### Submitting a Form with FormData
+
+- the process above is manual and error prone - so i gues I don't need to pay it toomuch attention.
+- `FormData` only uses input fields with a `name` attribute.
+- makes serializing data easy.
+- don't need headers as the browser automatically fills it in.
+
 #### Problems
+
+1. I got like 2 lines, but mainly am feeling rather lost:
+
+```javascript
+document.addEventListener('DOMContentLoaded', async () => {
+  let store = document.getElementById('store');
+  const BASE_URL = 'https://ls-230-web-store-demo.herokuapp.com';
+  
+  async function loadContent(url) {
+    let response = await fetch(url);
+    store.innerHTML = await response.text();
+  }
+
+  await loadContent(`${BASE_URL}/products`);
+
+  store.addEventListener('click', async event => {
+    event.preventDefault();
+
+    let form = event.target;
+    let data = new FormData(form);
+    let url = `https://ls-230-web-store-demo.herokuapp.com${form.getAttribute('action')}`;
+
+    let response = await fetch(url, {
+      method: 'POST', 
+      body: data,
+    });
+
+    store.innerHTML = await response.text();
+  });
+});
+```
+- ok I mistakenly thought I was meant to replace the click event, but I actually ahd to add another submit event.
+
+2.
+```javascript
+    let response = await fetch(url, {
+      method: 'POST',
+      body: data,
+      headers: {
+        Authorization: 'token AUTH_TOKEN',
+      },
+    });
+
+```
+
+- tricky
+
 ### [10	Example: Loading JSON via Fetch](https://launchschool.com/lessons/1b723bd0/assignments/cf01ccbf)
+
+- Well, apparently so far we have learnt how to retrieve HTML fragments from a server and insert them into a page....
+- sometimes you just need to load data in a primitive structure and render it with the client-side code.
+
+###### Server-side rendering v Client side rendering
+- SSR: building a complete web-page on the server side and sending that page to the client (web-browser)
+- CSR: server sends the bare-bones HTML document and some JS to the client. The client then executes the JS code which requests the data it needs and dynamically fills out the rest of the page..
+
+- various asynchronous response handling methods a `response` object provides:
+  - `.text()`
+  - `.json()`
+  - `.blob()`
+
 #### Problems
+
+1. I FUCKING NAILED IT BROOOOOO
+
+```javascript
+(async function fetchFromGH() {
+  let response = await fetch('https://api.github.com/repos/rails/rails');
+  let json = await response.json();
+  console.log(`Status: ${response.status}`);
+  console.log(`open issues: ${json.open_issues}`);
+})();
+```
+
+2. 
+nailed it again
+```javascript
+(async function fetchFromGH() {
+  try {
+    // let response = await fetch('https://api.github.com/repos/rails/rails');
+    let response = await fetch('hts://api.github.com/repos/rails/rails');
+    let json = await response.json();
+    console.log(`Status: ${response.status}`);
+    console.log(`open issues: ${json.open_issues}`);
+  } catch {
+    console.error('The request could not be completed!')
+  }
+})();
+```
+
 ### [11	Example: Sending JSON via Fetch](https://launchschool.com/lessons/1b723bd0/assignments/ae60c1cd)
-#### Setting the Content-Type Header
-#### Handling the Response
+
+- sending JSON data to a server is like submitting a form -> you use the same 3 steps with a few tweaks.
+  - serialise the data into valid JSON
+  - Send the request using `fetch` with a header of:
+    - `Content-Type: application/json; charset=utf-8`
+  - Handle the response.
+
+###### Step 1: serializing Data to JSON:
+  - this is a basic POST from javascript:
+
+```javascript
+fetch('https://lsjs230-book-catalog.herokuapp.com/books', {
+  method: 'POST',
+  body: 'title=Eloquent%20JavaScript&author=Marijn%20Haverbeke',
+});
+```
+
+- this is how it should be sent as JSON format:
+
+```javascript
+let data = { title: 'Eloquent JavaScript', author: 'Marijn Haverbeke' };
+let json = JSON.stringify(data);
+
+fetch('https://lsjs230-book-catalog.herokuapp.com/books', {
+  method: 'POST',
+  body: json,
+});
+```
+
+- the serialized JSON looks like this: `{"title": "Eloquent JavaScript", "author": "Marijn Haverbeke"}`
+
+#### Step 2: Setting the Content-Type Header:
+
+- might be not neccesary, do it anyway to be safe.
+
+```javascript
+let data = { title: 'Eloquent JavaScript', author: 'Marijn Haverbeke' };
+let json = JSON.stringify(data);
+
+fetch('https://lsjs230-book-catalog.herokuapp.com/books', {
+  method: 'POST',
+  headers: {
+    'Content-type': 'application/json; charset=utf-8',
+  },
+  body: json,
+});
+```
+
+#### Step 3: Handling the Response
+
+```javascript
+  let response = await fetch('https://lsjs230-book-catalog.herokuapp.com/books', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+    body: json,
+  });
+
+  if (response.status === 201) {
+    console.log(`This book was added to the catalog: ${await response.text()}`);
+  }
+```
+
 #### Problems
+
+1.
+2. Mistakes:
+  - I included `'Authorization': 'token AUTH_TOKEN',` with Authorisation not a string, but a variable
+  - I didn't convert the response into JSON with `const data = await response.json();`
+  - I didn't use `JSON.stringify()` to convert the response into readbale format:
+    - `  console.log(`This product was added: ${JSON.stringify(data)}`)`
+
 ### [12	Cross-Domain Requests with Fetch and CORS](https://launchschool.com/lessons/1b723bd0/assignments/25da79fd)
-#### Cross-Origin Requests
+
 #### Cross-Origin requests with Fetch
+
+- cross origin request means the page is trying to access a resource from a different origin.
+-example: we are on this page: `http://mysite.com/doc1`, it's a cross origin request if:
+  - the scheme/protocol is different: `https://mysite.com/doc1`
+  - the port is different: `http://mysite.com:4000/doc1`
+  - The host is different: `http://anothersite.com/doc1` (different host)
+- we're going to be focusing on cross-domain requests so a request from one domain host name to another domain.
+- These present security risks that attackers can exploit. It might be by fooling the user into clicking on a link that sends a request to an application with the user's credentials. (they are XSS and CSRF attacks, but we won't cover them here)
+
+#### Cross-Origin Requests
+- by default `fetch` can't retirtieve cross-origin resources.
+- All browsers enforce 'samme-origin policy'
+- We get around it with CORS
+
 #### CORS
+
+- It's a W3C sepcification that defines how browsers and servers must communicate when accessing resources across origins.
+- origin header.
+- Let the 2 systems know enough about each other to determine whether the response should be allowed to happen.
+- Every `fetch` request must have an `Origin` header that contains the origin of the requesting page.
+- The browser automatically adds the `Origin` header as part of a `fetch` request
+- So if we send a request from ` http://localhost:8080`, the browser adds this header `Origin: http://localhost:8080`
+- If the request is to be granted the response looks like this:
+  ```Access-Control-Allow-Origin`
+- If the server wants to make a resource avaialable to everyone it can send the header with a value of `*`:
+  - `Access-Control-Allow-Origin: *`
+  - Even if the response if totally kosher, but it does not have an appropriate `Access-Control-Allow-Origin` header and value, it will raise an error and not let the script access the response.
+
 #### CORS in action
+
+- This isn't working for me. In theory it seems quite straight forward though.
+
 #### Conclusion
+
+- gives us a way to complete legitimate cross-origin requests withou the security problems associated with cross-origin requests.
+
 ### [13	Legacy JavaScript - jQuery and XMLHttpRequest](https://launchschool.com/lessons/1b723bd0/assignments/84d25145)
+
+- There's lots of tools we don't use now, but you will come across. they won't be hard to learn when you need to.
+
 #### jQuery
+
+- "vanilla solution" or "jQuery" solution.
+- Recognise it by the `$` symbols sprinkled around.
+
+```javascript
+// Vanilla JS
+document.querySelector("button").addEventListener("click", function() {
+  alert("Button clicked!");
+});
+
+// jQuery
+$("button").click(function() {
+  alert("Button clicked!");
+});
+```
+
 #### XMLHttpRequest (XHR)
+
 ##### A Basic GET Request
+
+```javascript
+// XMLHttpRequest
+document.addEventListener("DOMContentLoaded", () => {
+  let request = new XMLHttpRequest();
+  request.open("GET", "https://ls-230-web-store-demo.herokuapp.com/products");
+
+  request.addEventListener("load", () => {
+    let store = document.getElementById("store");
+    store.innerHTML = request.response;
+  });
+
+  request.send();
+});
+
+// Equivelant request using Fetch
+document.addEventListener('DOMContentLoaded', async () => {
+  let store = document.getElementById('store');
+  let response = await fetch('https://ls-230-web-store-demo.herokuapp.com/products');
+  store.innerHTML = await response.text();
+});
+```
+
+- you don't need to commit any of this to memory, but it;'s good to know.
+
 ### [14	Project: Search Autocomplete, Part 1 - Introduction and Setup	](https://launchschool.com/lessons/1b723bd0/assignments/b9691285)
+
+- We'll build a small Javascript app that communicates with the server in response to user interactions.
+
 #### Introduction
+
+- auto-complete
+- Fosuc on how to use the API to power the front-end component you're building.
+- Three key take-aways:
+  - as a front-end dev you'll be working with APIs
+  - You won't always be working from scratch, so imagine you're on a team and you have to develop the front-end compoent of the web-app
+  - Notice the back-end uses `node` and `express`. This isn't a requirement, the code we write here should work with any server as long as it has the same API.
+
 #### Server Setup
+
+`http://localhost:3000/countries?matching=ca`
+
 ### [15	Project: Search Autocomplete, Part 2 - Setting up the UI](https://launchschool.com/lessons/1b723bd0/assignments/e784e7dd)
+
+
 #### Setting up the UI 
+
+- done
+
 ### [16	Project: Search Autocomplete, Part 3 - Talking to the server](https://launchschool.com/lessons/1b723bd0/assignments/0be1e6a9)
+
 #### Binding Events
+
+- yup
+
 #### Communicating With the Server
+
+```javascript
+  fetchMatches: async function(query) {
+    let response = await fetch(`${this.url}${encodeURIComponent(query)}`);
+    let data = await response.json();
+    return data;
+  },
+```
 #### Rendering List of Countries
+
+```javascript
+  draw: function() {
+    while (this.listUI.lastChild) {
+      this.listUI.removeChild(this.listUI.lastChild);
+    }
+
+    if (!this.visible) {
+      this.overlay.textContent = '';
+      return;
+    }
+
+    this.matches.forEach(match => {
+      let li = document.createElement('li');
+      li.classList.add('autocomplete-ui-choice');
+
+      li.textContent = match.name;
+      this.listUI.appendChild(li);
+    });
+  },
+```
+
 #### Resetting the UI
+
+```javascript
+const Autocomplete = {
+  // ...
+
+  reset: function() {
+    this.visible = false;
+    this.matches = [];
+
+    this.draw();
+  },
+
+  // ...
+};
+```
+
 #### Rendering Overlay Content
+
+
+
 #### Improving the Overlay Content
 ### [17	Project: Search Autocomplete, Part 4 - Improving user experience](https://launchschool.com/lessons/1b723bd0/assignments/d9af6b23)
 #### Going Up and Down the List
@@ -2614,12 +3169,12 @@ The last time the request was modified.
 
 ### [4	Part 1: Start the JS239 Quiz](https://launchschool.com/lessons/ee8a7b70/assignments/9e8f3b11)
   - revise:
-    -  teh DOM
+    -  the DOM
     -  the Event Model
     -  Asynchronous code
     -  AJAX with `fetch`
   -  3 and a half hours to complete
--  YOU CAN SKIP THIS
+-  YOU CAN SKIP THIS (but i won't)
 ### 5	Part 2: Tips for the JS239 Interview
 ### 6	Part 2: Schedule a JS239 Interview
 ### 7	JS239 Interview Feedback
