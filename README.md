@@ -3103,19 +3103,81 @@ const Autocomplete = {
 
 
 #### Improving the Overlay Content
+
+- yup
+
 ### [17	Project: Search Autocomplete, Part 4 - Improving user experience](https://launchschool.com/lessons/1b723bd0/assignments/d9af6b23)
+
 #### Going Up and Down the List
+
+- highlight a country by pressing up or down.
+
 #### Tab Completion
+
+
+- press tab, it completes with the highlighted option
+
 #### Hide the List and Revert to User Input
+
+- keeping track of what the user typed before
+- I'm not sure this is working as it's meant to be...
+
 #### Selecting a Country by Clicking
+
+- got parts of it, but not all.
+  - wins:
+    - i identified event.target as the thing I needed
+    - I knew to add a line to our `bindEvents()` method:
+```javascript
+bindEvents: function() {
+    this.input.addEventListener('input', this.valueChanged.bind(this));
+    this.input.addEventListener('keydown', this.handleKeydown.bind(this));
+    this.listUI.addEventListener('mousedown', this.handleMousedown.bind(this));
+  },
+```
+- Learnt
+  - we used a 'mousedown event' rather than a click event:
+    - `this.listUI.addEventListener('mousedown', this.handleMousedown.bind(this));`
+  -
 ### [18	Project: Search Autocomplete, Part 5 - Throttling Fetch requests](https://launchschool.com/lessons/1b723bd0/assignments/72dd3b59)
+
 #### The Problem
-#### The Solution
-###### Throttling
+
+- we're sending too many requests
+  
+#### The Solution: Throttling
+
+ wait a bit before sending the request
+
 #### Implementing debounce
+
+- a function that takes care of this. Takes a callback and a delay in ms.
+- Cool!
+
 ##### Making the Code Reusable
+
+- 
+
 ### [19	Summary](https://launchschool.com/lessons/1b723bd0/assignments/7729a45a)	
-### 20	Quiz	
+
+-ok
+
+### [20 Quiz](https://launchschool.com/quizzes/eb268892)
+
+- 1st try 2/10
+- 2nd try: 6/10
+1.  A -> tick
+2.  B -> tick
+3.  C, D -> tick
+4.  A, B, C, D -> not B or D
+5.  B, C, -> actually A and B
+6.  A -> nope, C and D
+- `get data returns a prommise
+- JSON.parse is unecessarty and leads to an error.
+7.  C, D -> tick
+8.  A, B, C, D -> not C I'm afraid. we don;t know that the response will contain JSON
+9.  A -> tick
+10.  D -> tick
 
 ## [4	Putting it All Together](https://launchschool.com/lessons/32b572ea/assignments)
 ### [1	Introduction](https://launchschool.com/lessons/32b572ea/assignments/bcd772c9)	
