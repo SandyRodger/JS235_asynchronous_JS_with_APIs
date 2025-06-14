@@ -3180,8 +3180,22 @@ bindEvents: function() {
 10.  D -> tick
 
 ## [4	Putting it All Together](https://launchschool.com/lessons/32b572ea/assignments)
+
 ### [1	Introduction](https://launchschool.com/lessons/32b572ea/assignments/bcd772c9)	
+
+- yup
+
 ### [2	Project: Photo Gallery, Part 1 - Introduction and Server Setup](https://launchschool.com/lessons/32b572ea/assignments/96518ba5)
+
+- handle events
+- make Ajax requests
+- update the DOM
+- create a photo gallery with data received from our API server
+- like/favourite/comment on photos
+- render comments below slide-show
+- send new comments ack vie AJAX
+- When the slideshow advances (?) the details of the photo and the comments are re-rendered to match the visible image (?)
+
 #### Server Set up
 #### HTML & CSS
 ### [3	Project: Photo Gallery, Part 2 - Fetch Data and Render on Page Load	](https://launchschool.com/lessons/32b572ea/assignments/584a0789)
@@ -3193,6 +3207,9 @@ bindEvents: function() {
 ### [5	 Project: Photo Gallery, Part 4 - Like, Favorite, and Comment](https://launchschool.com/lessons/32b572ea/assignments/3c346f4c)
 #### Step 4: Like and Favorite a Photo
 #### Step 5: Add a New Comment for a Photo
+
+- I did this project, looking at the LS solution, not really feeling like I had enough time to devote more than 15 minutes to each solution. Have I internalised enough of it?
+
 ### [6	Project: Booking App, Part 1 - Introduction and Server Setup](https://launchschool.com/lessons/32b572ea/assignments/40b0794b)
 ##### App Description
 ##### App Specifications
