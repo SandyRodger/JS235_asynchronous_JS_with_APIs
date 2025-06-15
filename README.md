@@ -3211,9 +3211,53 @@ bindEvents: function() {
 - I did this project, looking at the LS solution, not really feeling like I had enough time to devote more than 15 minutes to each solution. Have I internalised enough of it?
 
 ### [6	Project: Booking App, Part 1 - Introduction and Server Setup](https://launchschool.com/lessons/32b572ea/assignments/40b0794b)
+- 15.6.25
 ##### App Description
 ##### App Specifications
+
+- 4 resources/ specifications:
+  - Staff members:
+    - ID
+    - name
+    - email
+  - Schedules
+    - ID
+    - Staff ID
+    - Date
+    - Time
+    - Student Email
+  - Students
+    - Id
+    - Name
+    - Email
+  - Booking sequences
+    - ID
+    - Student Email
+    - Sequence
+
+- staff members can provide time-slots
+- Schedules can be booked by students
+- A schedule is booked if there is a value for the student email
+- Students can bok a schedule
+- A student who wants to register must have a booking sequence
+- Students get a bookig sequence when they first try to book a schedule and are not yet in the database.
+
 ##### Getting to Know the Booking App
+
+1. How many staff are there?
+  - 5
+2. How many students are there?
+  - 5
+3. How many schedules exist?
+  -  7
+    -  incorrect, 9. I misread what I though was the final entry
+4. How many schedules have bookings?
+  - 3
+5. Do all staff have schedules?
+  - no (there is no path for this but it is inferable from the info above)
+6. Did all students book a schedule?
+  - no, same reason as above
+
 ### [7	Project: Booking App, Part 2 - Getting Schedules	](https://launchschool.com/lessons/32b572ea/assignments/de4a7522)
 
 ### [8	Project: Booking App, Part 3 - Adding Staff](https://launchschool.com/lessons/32b572ea/assignments/94801ccf)	
