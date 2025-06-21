@@ -2532,6 +2532,12 @@ The last time the request was modified.
 - AJAX is good for hovering over a word and a popup telling us about that word
 - Or for when a loarge page has a form. If yiou submit it with an error, you won't want to reload the whole page
 
+#### What is the advantage of using AJAX over letting the browser automatically visit links and submit forms? (LSBot refined)
+
+- it only effects the relevant part of the page and does not reload the whole page.
+- unlike requests from the browser it is free to ignore responses
+- there are more HTTP methods available to AJAX (such as PUT, DELETE, and PATCH.
+
 #### Single Page Applications
 
 - These days making extra HTML requests outside the main HTML page load is super common, and indeed some modern apps fetch data in a serialized format stitching the DOM together just from those. These are "Single-page applications" because they often run entirely within one HTML page. So this model does each interaction by passing data to and from the server, usually encoded as JSON
@@ -2540,6 +2546,12 @@ The last time the request was modified.
 
 - used to do this with `XMLHttpRequest` object. That used callbacks, but this is...
 - promise-based.
+
+#### Imagine we need to access some JSON data that's provided by an API endpoint. What are the three basic steps required to do so using fetch? You may assume we do so using a GET request. (LSbot approveded)
+
+1. Send a fetch request with a url and an optional configuration object to provide method, headers and body
+2. Capture the promise returned that resolves to a Response object
+3. Use asynchronous methods such as `.json` and `.text` to handle the response data (also provide a catch statement to handle any errors).
 
 #### Making a Simple Request
 
@@ -2944,7 +2956,7 @@ fetch('https://lsjs230-book-catalog.herokuapp.com/books', {
 - These present security risks that attackers can exploit. It might be by fooling the user into clicking on a link that sends a request to an application with the user's credentials. (they are XSS and CSRF attacks, but we won't cover them here)
 
 #### Cross-Origin Requests
-- by default `fetch` can't retirtieve cross-origin resources.
+- by default `fetch` can't retrieve cross-origin resources.
 - All browsers enforce 'samme-origin policy'
 - We get around it with CORS
 
@@ -2955,12 +2967,12 @@ fetch('https://lsjs230-book-catalog.herokuapp.com/books', {
 - Let the 2 systems know enough about each other to determine whether the response should be allowed to happen.
 - Every `fetch` request must have an `Origin` header that contains the origin of the requesting page.
 - The browser automatically adds the `Origin` header as part of a `fetch` request
-- So if we send a request from ` http://localhost:8080`, the browser adds this header `Origin: http://localhost:8080`
+- So if we send a request from `http://localhost:8080`, the browser adds this header `Origin: http://localhost:8080`
 - If the request is to be granted the response looks like this:
   ```Access-Control-Allow-Origin`
 - If the server wants to make a resource avaialable to everyone it can send the header with a value of `*`:
   - `Access-Control-Allow-Origin: *`
-  - Even if the response if totally kosher, but it does not have an appropriate `Access-Control-Allow-Origin` header and value, it will raise an error and not let the script access the response.
+  - Even if the response is totally kosher, but it does not have an appropriate `Access-Control-Allow-Origin` header and value, it will raise an error and not let the script access the response.
 
 #### CORS in action
 
