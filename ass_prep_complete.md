@@ -39,19 +39,218 @@ async function fetchData() {
 Include proper headers and handle the response appropriately.
 
 ```javascript
-function postRequest(url) {
-  const data = { 
-    name: "Alice Johnson",
-    email: "alice@example.com", 
-    age: 28 
-  };
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-    },
-    body: JSON.stringify(data)
-  });
-  return await response.json();
+async function postRequest(url) {
+  try {
+    const data = { 
+      name: "Alice Johnson",
+      email: "alice@example.com", 
+      age: 28 
+    };
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Request failed:', error);
+    throw error;
+  }
 }
 ```
+
+#### 5. ​Advanced​: Response Body Consumption* Explain why the following code will cause an error and how to fix it:
+
+```
+async function processResponse() {
+  const response = await fetch('https://api.example.com/data');
+  const text = await response.text();
+  const json = await response.json(); // This will fail
+  return { text, json };
+}
+```
+
+- This code will cause an error because it is consuming the `Response` twice, when it is only possible to do so once. To fix this while preserving the intention of the code one can either clone the response like this:
+
+```
+async function processResponse() {
+  const response = await fetch('https://api.example.com/data');
+  const responseClone = response.clone();
+  const text = await response.text();
+  const json = await responseClone.json();
+  return { text, json };
+}
+```
+
+or create the Json object from the text, like this:
+
+
+```
+async function processResponse() {
+  const response = await fetch('https://api.example.com/data');
+  const text = await response.text();
+  const json = JSON.parse(text);
+  return { text, json };
+}
+```
+#### 6. ​Advanced​: Error Handling and Response Validation* Complete this function to properly handle different response scenarios:
+
+```
+async function robustFetch(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}:${response.statusText}`);
+    }
+    const result = await response.json();
+    if (!result) {
+      throw new Error(result);
+    }
+    return result;
+  } catch (error) {
+    console.error('Problem retrieving resource', error)
+  }
+}
+```
+
+- There are 3 problems: 
+  1: in line 4 we test the validity of the response by using a `!` to see if it is not truthy, but valid JSON can be `null`, `false` `0` or `""`.
+  2: `throw new Error(result);` this line passes the response object as an error message which isn't helpful
+  3: It would be clearer if there was a space in the middle of this string: `HTTP ${response.status}:${response.statusText}`
+
+Also I would return the result of parsing the json response and defer error handling to the event handler that called `robustFetch`.
+
+I would correct the code to look like this:
+
+```
+async function robustFetch(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Problem retrieving resource: ', error);
+    throw error;
+  }
+}
+```
+
+### 7 Debugging Exercise​: Fix the Fetch Implementation*
+
+// This code is supposed to send form data and display the result, but it has several issues. Identify and fix them:
+
+function submitForm(formData) { // this needs to be preceded by the `await` keyword
+  fetch('https://api.example.com/submit', { //this needs to be preceded by `await` and also saved to a variable
+    method: 'POST',
+    // this is missing a headers key with an appropriate value
+    body: formData // this is formData and needs to be parsed into a string with `JSON.stringify(formData)
+  })
+  .then(response => {
+    return response.json;
+  }) // there is no catch statement for error handling
+  .then(data => {
+    console.log('Success:', data);
+  });
+}
+
+// I would correct the code to use try/catch syntax for more robust error handling
+
+async function submitForm(formData) {
+  try {
+    const response = await fetch('https://api.example.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    }) 
+
+    if (!response.ok) {
+      throw new Error(`Problem retrieving data: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+### 8 Explain FormData
+
+Based on the Launch School curriculum, FormData is a built-in browser API that helps serialize form data for HTTP requests. Let me clarify when to use it and address your question about JSON conversion.
+When FormData is Used
+FormData is primarily used when:
+1.  ​Submitting HTML forms via JavaScript​ - Instead of manually extracting and encoding form field values
+2.  ​Uploading files​ - FormData handles file uploads naturally
+3.  ​Working with multipart/form-data​ - When you need this specific encoding format
+FormData Does NOT Need JSON Conversion
+This is a key misconception to clear up. FormData should ​not​ be converted to JSON for network requests. Here's why:
+Direct Usage with Fetch
+let form = document.getElementById('form');
+let data = new FormData(form);
+
+// Use FormData directly - no conversion needed
+fetch('/api/books', {
+  method: 'POST',
+  body: data  // FormData goes directly in body
+  // No Content-Type header needed - browser sets it automatically
+});
+When you use FormData directly:
+•   Browser automatically sets Content-Type: multipart/form-data; boundary=...
+•   Data is sent in multipart format, not JSON
+•   Perfect for forms with file uploads
+When You DO Convert FormData
+You only convert FormData to a plain object when you specifically want to send ​JSON​ instead of multipart data:
+// Convert FormData to plain object for JSON sending
+function formDataToObject(formData) {
+  return Object.fromEntries(formData.entries());
+}
+
+let form = document.getElementById('form');
+let formData = new FormData(form);
+let jsonData = formDataToObject(formData);
+
+fetch('/api/books', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(jsonData)  // Now sending JSON
+});
+Three Common Approaches
+According to the JS235 curriculum, you have three main serialization options:
+1.  ​URL-encoded​ (application/x-www-form-urlencoded)
+2.  ​Multipart​ (multipart/form-data) - what FormData uses
+3.  ​JSON​ (application/json)
+Choose FormData when you want multipart encoding, especially for file uploads. Convert to JSON only when the API specifically requires JSON format.
+
+#### 9 FormData Conversion
+// Write a function that takes a FormData object and converts it to a regular JavaScript object that can be JSON stringified. Then demonstrate how to use this in a fetch request.
+
+// Convert FormData to plain object for JSON sending
+function formDataToObject(formData) {
+  return Object.fromEntries(formData.entries());
+}
+
+let form = document.getElementById('form');
+let formData = new FormData(form);
+let jsonData = formDataToObject(formData);
+
+fetch('/api/books', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(jsonData)  // Now sending JSON
+});
