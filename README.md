@@ -2957,7 +2957,7 @@ fetch('https://lsjs230-book-catalog.herokuapp.com/books', {
 
 #### Cross-Origin Requests
 - by default `fetch` can't retrieve cross-origin resources.
-- All browsers enforce 'samme-origin policy'
+- All browsers enforce 'same-origin policy'
 - We get around it with CORS
 
 #### CORS
@@ -2977,6 +2977,25 @@ fetch('https://lsjs230-book-catalog.herokuapp.com/books', {
 #### CORS in action
 
 - This isn't working for me. In theory it seems quite straight forward though.
+
+### CORS Explanation
+
+What constitutes a cross-origin request:
+
+A cross-origin request occurs when a web page attempts to access a resource from a different origin than the one serving the page. An origin is defined by the combination of scheme (protocol), host (domain), and port. If any of these three components differ between the requesting page and the target resource, it's considered a cross-origin request.
+For example:
+•   A page at https://myapp.com requesting data from https://weather-api.com (different host)
+•   A page at http://localhost:8080 requesting from http://localhost:3000 (different port)
+•   A page at http://example.com requesting from https://example.com (different scheme)
+
+The security concern that CORS addresses:
+
+CORS addresses critical security vulnerabilities, particularly Cross-Site Request Forgery (CSRF) and certain Cross-Site Scripting (XSS) attacks. Without proper controls, malicious websites could exploit a user's authenticated sessions with other sites to make unauthorized requests on their behalf. For instance, a malicious site could attempt to access your banking information or make transactions using your existing login credentials from another tab.
+
+The role of the same-origin policy:
+
+The same-origin policy is a fundamental security concept implemented by web browsers that restricts how documents or scripts from one origin can interact with resources from another origin. By default, this policy blocks cross-origin requests made by JavaScript (including fetch and XMLHttpRequest). This serves as the first line of defense, preventing potentially malicious cross-origin access attempts.
+CORS provides a controlled mechanism to selectively relax the same-origin policy when cross-origin access is legitimately needed, allowing servers to explicitly specify which origins are permitted to access their resources through specific HTTP headers.
 
 #### Conclusion
 
